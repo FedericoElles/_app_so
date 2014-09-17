@@ -34,13 +34,13 @@ app.get('/', function(req, res){
     var options = {
     };
     //rss feeds
-    parser.parseURL(url +'/proxy?uri=http://www.spiegel.de/schlagzeilen/tops/index.rss', options, function(err, out){
+    parser.parseURL(url +'/so/proxy?uri=http://www.spiegel.de/schlagzeilen/tops/index.rss', options, function(err, out){
       //res.send(JSON.stringify(out));
 
       for (var i=0, ii=out.items.length;i<ii;i+=1){
         item = out.items[i];
         html += '<p>'+
-                '<a href="/unfluff?uri=' + item.url + '">' + 
+                '<a href="/so/unfluff?uri=' + item.url + '">' + 
                 iconv.decode(item.title, 'UTF-8') + '</a>' +
                 '<br>' +  iconv.decode(item.summary, 'UTF-8') + '</p>';
       }
@@ -70,12 +70,12 @@ app.get('/unfluff', function(req, res){
   request({url:req.query.uri, method:'GET', encoding: null}, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       data = extractor(iconv.decode(body, 'ISO-8859-1'), 'de');
-      html += '<p><a href="/">Back</a></p><hr>';
+      html += '<p><a href="javascript:window.history.back()">Back</a></p><hr>';
       html += '<h3>' + data.title + '</h3>';
       html += '<p><a href="'+ req.query.uri +'" target="_blank">' + req.query.uri+ '</a></p>';
       if (data.image != null) {html += '<img style="max-width: 100%;" src="' + data.image  +'"/>';}
       html += '<p>' + data.text + '</p>';
-      html += '<hr><a href="/"><p>Back</p></a>';
+      html += '<hr><a href="javascript:window.history.back()"><p>Back</p></a>';
       res.send(HEAD + html + FOOT); // Print the google web page.
     }
   })  
